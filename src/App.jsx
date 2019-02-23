@@ -12,8 +12,8 @@ export default () => (
   <div className="container">
     <Tabs>
       <TabList>
-        <Tab><span id="tab1">Jest</span></Tab>
-        <Tab><span id="tab2">Enzyme</span></Tab>
+        <Tab data-test="section-tab">Jest</Tab>
+        <Tab data-test="section-tab">Enzyme</Tab>
       </TabList>
 
       <TabPanel>

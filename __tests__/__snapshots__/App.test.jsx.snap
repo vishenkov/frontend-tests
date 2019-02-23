@@ -17,29 +17,23 @@ exports[`Snapshot suite should change tab on click 1`] = `
         aria-disabled="false"
         aria-selected="false"
         class="react-tabs__tab"
+        data-test="section-tab"
         id="react-tabs-4"
         role="tab"
       >
-        <span
-          id="tab1"
-        >
-          Jest
-        </span>
+        Jest
       </li>
       <li
         aria-controls="react-tabs-7"
         aria-disabled="false"
         aria-selected="true"
         class="react-tabs__tab react-tabs__tab--selected"
+        data-test="section-tab"
         id="react-tabs-6"
         role="tab"
         tabindex="0"
       >
-        <span
-          id="tab2"
-        >
-          Enzyme
-        </span>
+        Enzyme
       </li>
     </ul>
     <div
@@ -80,6 +74,7 @@ exports[`Snapshot suite should render correctly 1`] = `
     >
       <Tab
         className="react-tabs__tab"
+        data-test="section-tab"
         disabledClassName="react-tabs__tab--disabled"
         focus={false}
         id={null}
@@ -87,14 +82,11 @@ exports[`Snapshot suite should render correctly 1`] = `
         selected={false}
         selectedClassName="react-tabs__tab--selected"
       >
-        <span
-          id="tab1"
-        >
-          Jest
-        </span>
+        Jest
       </Tab>
       <Tab
         className="react-tabs__tab"
+        data-test="section-tab"
         disabledClassName="react-tabs__tab--disabled"
         focus={false}
         id={null}
@@ -102,11 +94,7 @@ exports[`Snapshot suite should render correctly 1`] = `
         selected={false}
         selectedClassName="react-tabs__tab--selected"
       >
-        <span
-          id="tab2"
-        >
-          Enzyme
-        </span>
+        Enzyme
       </Tab>
     </TabList>
     <TabPanel

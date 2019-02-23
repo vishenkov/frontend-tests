@@ -11,8 +11,9 @@ describe('Shallow suite', () => {
 
   it('should change tab on click', () => {
     const wrapper = mount(<App />);
-    // console.log(wrapper.debug())
-    wrapper.find('#tab2').first().simulate('click');
+
+    const tab2 = wrapper.find('[data-test="section-tab"]').at(2);
+    tab2.simulate('click');
     expect(wrapper.find('p').length).toEqual(2);
   });
 });
@@ -26,8 +27,9 @@ describe('Snapshot suite', () => {
 
   it('should change tab on click', () => {
     const wrapper = mount(<App />);
-    // console.log(wrapper.debug())
-    wrapper.find('#tab2').simulate('click');
-    expect(toJson(wrapper.render())).toMatchSnapshot();
+
+    const tab2 = wrapper.find('[data-test="section-tab"]').at(2);
+    tab2.simulate('click');
+    expect(toJson(wrapper.render(), { mode: 'deep' })).toMatchSnapshot();
   });
 });
