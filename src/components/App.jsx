@@ -6,6 +6,7 @@ import {
   TabList,
   TabPanel,
 } from 'react-tabs';
+import cn from 'classnames';
 import 'react-tabs/style/react-tabs.css';
 
 import withStateLogger from '../hocs/withStateLogger';
@@ -21,7 +22,7 @@ console.log(_.keys(fixtures), _.difference(['jest'], _.keys(fixtures)));
 class App extends React.Component {
   state = {
     tabIndex: 0,
-    tabs: ['jest'],
+    tabs: ['jest', 'enzyme'],
   };
 
   handleAddClick = () => {
@@ -58,13 +59,17 @@ class App extends React.Component {
           <TabList>
             {_.map(tabs, (value, index) => (
               <Tab
+                key={value}
                 data-test="section-tab"
-                data-test-selected-tab={index === tabIndex}
+                className={cn({
+                  active: index === tabIndex,
+                })}
               >
                 {_.capitalize(value)}
                 <button
                   type="button"
                   className="close"
+                  data-test="section-delete-button"
                   onClick={this.handleCloseClick(value)}
                   disabled={tabs.length === 1}
                 >
@@ -84,10 +89,12 @@ class App extends React.Component {
           </TabList>
 
           {_.map(tabs, (value, index) => (
-            <TabPanel>
+            <TabPanel key={value}>
               <div
                 data-test="section-content"
-                data-test-selected-tab={index === tabIndex}
+                className={cn({
+                  active: index === tabIndex,
+                })}
               >
                 <p className="content content1">{fixtures[value]}</p>
               </div>
