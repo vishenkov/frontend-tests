@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Tab,
   Tabs,
@@ -17,13 +18,34 @@ const fixtures = {
   eslint: 'ESLint is an open source project originally created by Nicholas C. Zakas in June 2013. Its goal is to provide a pluggable linting utility for JavaScript.',
   webpack: 'At its core, webpack is a static module bundler for modern JavaScript applications.',
 };
-console.log(_.keys(fixtures), _.difference(['jest'], _.keys(fixtures)));
+
 
 class App extends React.Component {
-  state = {
-    tabIndex: 0,
-    tabs: ['jest', 'enzyme'],
+  static propTypes = {
+    storage: PropTypes.shape({
+      get: PropTypes.func.isRequired,
+      set: PropTypes.func.isRequired,
+    }),
   };
+
+  static defaultProps = {
+    storage: {
+      get: _.noop,
+      set: _.noop,
+    },
+  };
+
+  constructor(props) {
+    super(props);
+
+    const { storage } = props;
+    const tabIndex = storage.get('tabIndex') || 0;
+
+    this.state = {
+      tabIndex: Number(tabIndex),
+      tabs: ['jest', 'enzyme', 'eslint'],
+    };
+  }
 
   handleAddClick = () => {
     const { tabs } = this.state;
@@ -37,7 +59,10 @@ class App extends React.Component {
   }
 
   handleTabSelect = (tabIndex) => {
-    this.setState({ tabIndex });
+    const { storage } = this.props;
+    this.setState({ tabIndex }, () => {
+      storage.set('tabIndex', tabIndex);
+    });
   }
 
   handleCloseClick = value => () => {
@@ -81,6 +106,7 @@ class App extends React.Component {
             <button
               type="button"
               className="btn btn-primary btn-sm"
+              data-test="section-tab-add"
               disabled={_.keys(fixtures).length === tabs.length}
               onClick={this.handleAddClick}
             >
