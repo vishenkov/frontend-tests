@@ -2,124 +2,13 @@
 
 exports[`Snapshot suite should change tab on click 1`] = `
 <div
-  class="container"
+  data-test="section-content"
 >
-  <div
-    class="react-tabs"
-    data-tabs="true"
-  >
-    <ul
-      class="react-tabs__tab-list"
-      role="tablist"
-    >
-      <li
-        aria-controls="react-tabs-5"
-        aria-disabled="false"
-        aria-selected="false"
-        class="react-tabs__tab"
-        data-test="section-tab"
-        id="react-tabs-4"
-        role="tab"
-      >
-        Jest
-      </li>
-      <li
-        aria-controls="react-tabs-7"
-        aria-disabled="false"
-        aria-selected="true"
-        class="react-tabs__tab react-tabs__tab--selected"
-        data-test="section-tab"
-        id="react-tabs-6"
-        role="tab"
-        tabindex="0"
-      >
-        Enzyme
-      </li>
-    </ul>
-    <div
-      aria-labelledby="react-tabs-4"
-      class="react-tabs__tab-panel"
-      id="react-tabs-5"
-      role="tabpanel"
-    />
-    <div
-      aria-labelledby="react-tabs-6"
-      class="react-tabs__tab-panel react-tabs__tab-panel--selected"
-      id="react-tabs-7"
-      role="tabpanel"
-    >
-      <p>
-        Enzyme is a JavaScript Testing utility for React that makes it easier to test your React Components output. You can also manipulate, traverse, and in some ways simulate runtime given the output.
-      </p>
-      <p>
-        Enzyme API is meant to be intuitive and flexible by mimicking jQuery API for DOM manipulation and traversal.
-      </p>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Snapshot suite should render correctly 1`] = `
-<div
-  className="container"
->
-  <Tabs
-    defaultFocus={false}
-    defaultIndex={null}
-    forceRenderTabPanel={false}
-    selectedIndex={null}
-  >
-    <TabList
-      className="react-tabs__tab-list"
-    >
-      <Tab
-        className="react-tabs__tab"
-        data-test="section-tab"
-        disabledClassName="react-tabs__tab--disabled"
-        focus={false}
-        id={null}
-        panelId={null}
-        selected={false}
-        selectedClassName="react-tabs__tab--selected"
-      >
-        Jest
-      </Tab>
-      <Tab
-        className="react-tabs__tab"
-        data-test="section-tab"
-        disabledClassName="react-tabs__tab--disabled"
-        focus={false}
-        id={null}
-        panelId={null}
-        selected={false}
-        selectedClassName="react-tabs__tab--selected"
-      >
-        Enzyme
-      </Tab>
-    </TabList>
-    <TabPanel
-      className="react-tabs__tab-panel"
-      forceRender={false}
-      selectedClassName="react-tabs__tab-panel--selected"
-    >
-      <p
-        className="content content1"
-      >
-        Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
-      </p>
-    </TabPanel>
-    <TabPanel
-      className="react-tabs__tab-panel"
-      forceRender={false}
-      selectedClassName="react-tabs__tab-panel--selected"
-    >
-      <p>
-        Enzyme is a JavaScript Testing utility for React that makes it easier to test your React Components output. You can also manipulate, traverse, and in some ways simulate runtime given the output.
-      </p>
-      <p>
-        Enzyme API is meant to be intuitive and flexible by mimicking jQuery API for DOM manipulation and traversal.
-      </p>
-    </TabPanel>
-  </Tabs>
+  <p>
+    Enzyme is a JavaScript Testing utility for React that makes it easier to test your React Components output. You can also manipulate, traverse, and in some ways simulate runtime given the output.
+  </p>
+  <p>
+    Enzyme API is meant to be intuitive and flexible by mimicking jQuery API for DOM manipulation and traversal.
+  </p>
 </div>
 `;

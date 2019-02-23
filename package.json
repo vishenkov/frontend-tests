@@ -12,8 +12,11 @@
   "author": "Kirill Vishenkov <vishkir1991@gmail.com>",
   "license": "ISC",
   "jest": {
-    "setupTestFrameworkScriptFile": "jest-enzyme",
-    "testEnvironment": "enzyme",
+    "setupFilesAfterEnv": ["jest-enzyme"],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "testEnvironment": "jest-environment-enzyme",
     "moduleNameMapper": {
       "\\.(css|less)$": "identity-obj-proxy"
     },
