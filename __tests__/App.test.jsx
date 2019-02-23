@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-import App from '../src/App';
+import App from '../src/components/App';
 
 describe('Snapshot suite', () => {
   it('should change tab on click', () => {
