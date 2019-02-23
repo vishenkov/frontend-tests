@@ -12,7 +12,7 @@ describe('Shallow suite', () => {
   it('should change tab on click', () => {
     const wrapper = mount(<App />);
     // console.log(wrapper.debug())
-    wrapper.find('#react-tabs-2').first().simulate('click');
+    wrapper.find('#tab2').first().simulate('click');
     expect(wrapper.find('p').length).toEqual(2);
   });
 });
