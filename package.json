@@ -4,15 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --mode development",
+    "start": "webpack-dev-server --open --mode development --DEBUG=app:*",
     "build": "webpack --mode production",
-    "test": "jest"
+    "test": "jest",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --watch --runInBand"
   },
   "keywords": [],
   "author": "Kirill Vishenkov <vishkir1991@gmail.com>",
   "license": "ISC",
   "jest": {
-    "setupFilesAfterEnv": ["jest-enzyme"],
+    "setupFilesAfterEnv": [
+      "jest-enzyme"
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "babel-jest": "^24.1.0",
@@ -51,6 +55,7 @@
     "webpack-dev-server": "^3.2.0"
   },
   "dependencies": {
+    "debug": "^4.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",

@@ -11,6 +11,7 @@ describe('Snapshot suite', () => {
     const tab = wrapper.find('[data-test="section-tab"]').at(2);
     tab.simulate('click');
     const tabContent = wrapper.find('[data-test="section-content"]');
+    debugger;
     expect(toJson(tabContent.render())).toMatchSnapshot();
   });
 });
