@@ -1,43 +1,63 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import toJson from 'enzyme-to-json';
 
 import App from '../src/components/App';
 
-describe('Snapshot suite', () => {
-  it('should change tab on click', () => {
-    const wrapper = mount(<App />);
+const AppPage = wrapper => ({
+  wrapper,
+  tabs() {
+    return wrapper.find('li[data-test="section-tab"]');
+  },
 
-    const tab = wrapper.find('[data-test="section-tab"]').at(2);
-    tab.simulate('click');
-    const tabContent = wrapper.find('[data-test="section-content"]');
-    expect(toJson(tabContent.render())).toMatchSnapshot();
-  });
+  tabContent() {
+    return wrapper.find('div[data-test="section-content"]');
+  },
+  firstTab() {
+    return this.tabs().at(0);
+  },
+  secondTab() {
+    return this.tabs().at(1);
+  },
+  removeButtons() {
+    return wrapper.find('button[data-test="section-delete-button"]');
+  },
+  addButton() {
+    return wrapper.find('button[data-test="section-tab-add"]').at(0);
+  },
 });
 
+
 describe('Matchers suite', () => {
-  it('Should active second tab', () => {
-    const wrapper = mount(<App />);
+  it('Should switch to second tab', () => {
+    const app = AppPage(mount(<App />));
+    app.secondTab().simulate('click');
 
-    const tabs = wrapper.find('li[data-test="section-tab"]');
-    tabs.at(1).simulate('click');
-
-    const updatedTabs = wrapper.find('li[data-test="section-tab"]');
-
-    expect(updatedTabs.at(0)).not.toHaveClassName('.active');
-    expect(updatedTabs.at(1)).toHaveClassName('.active');
+    expect(app.firstTab()).not.toHaveClassName('active');
+    expect(app.secondTab()).toHaveClassName('active');
   });
 
 
   it('should remove tab on click', () => {
-    const wrapper = mount(<App />);
+    const app = AppPage(mount(<App />));
 
-    const tabs = wrapper.find('li[data-test="section-tab"]');
-    expect(wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
-    const removeButton = wrapper.find('[data-test="section-delete-button"]').at(0);
+    const tabs = app.tabs();
+    expect(app.wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
+    const removeButton = app.removeButtons().at(0);
 
     removeButton.simulate('click');
 
-    expect(wrapper).toContainMatchingElements(tabs.length - 1, 'li[data-test="section-tab"]');
+    expect(app.wrapper).toContainMatchingElements(tabs.length - 1, 'li[data-test="section-tab"]');
+  });
+
+
+  it('should add tab on click', () => {
+    const app = AppPage(mount(<App />));
+
+    const tabs = app.tabs();
+    expect(app.wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
+
+    app.addButton().simulate('click');
+
+    expect(app.wrapper).toContainMatchingElements(tabs.length + 1, 'li[data-test="section-tab"]');
   });
 });
