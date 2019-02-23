@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { mount } from 'enzyme';
 
@@ -23,6 +24,10 @@ const AppPage = wrapper => ({
   },
   addButton() {
     return wrapper.find('button[data-test="section-tab-add"]').at(0);
+  },
+  reload() {
+    wrapper.unmount();
+    wrapper.mount();
   },
 });
 
@@ -59,5 +64,43 @@ describe('Matchers suite', () => {
     app.addButton().simulate('click');
 
     expect(app.wrapper).toContainMatchingElements(tabs.length + 1, 'li[data-test="section-tab"]');
+  });
+});
+
+
+describe('Storage tests', () => {
+  it('Should not fail on empty storage state', () => {
+    const storage = {
+      get: _.constant(undefined),
+      set: _.noop,
+    };
+    const app = AppPage(mount(<App storage={storage} />));
+
+    expect(app.firstTab()).toHaveClassName('active');
+  });
+
+
+  it('should get active tab from storage', () => {
+    const storage = {
+      get: _.constant(1),
+      set: _.noop,
+    };
+
+    const app = AppPage(mount(<App storage={storage} />));
+    expect(app.secondTab()).toHaveClassName('active');
+  });
+
+
+  it('should save state on reload', () => {
+    const storage = {
+      state: {},
+      get(key) { return this.state[key]; },
+      set(key, value) { this.state[key] = value; },
+    };
+
+    const app = AppPage(mount(<App storage={storage} />));
+    app.secondTab().simulate('click');
+    app.reload();
+    expect(app.secondTab()).toHaveClassName('active');
   });
 });
