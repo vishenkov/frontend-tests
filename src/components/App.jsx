@@ -26,12 +26,18 @@ class App extends React.Component {
       get: PropTypes.func.isRequired,
       set: PropTypes.func.isRequired,
     }),
+    fetch: PropTypes.shape({
+      get: PropTypes.func.isRequired,
+    }),
   };
 
   static defaultProps = {
     storage: {
       get: _.noop,
       set: _.noop,
+    },
+    fetch: {
+      get: _.noop,
     },
   };
 
@@ -44,6 +50,9 @@ class App extends React.Component {
     this.state = {
       tabIndex: Number(tabIndex),
       tabs: ['jest', 'enzyme', 'eslint'],
+      rssTabs: {},
+      rssUrl: '',
+      loading: false,
     };
   }
 
@@ -72,11 +81,80 @@ class App extends React.Component {
     });
   }
 
+  handleUrlChange = (e) => {
+    this.setState({
+      rssUrl: e.target.value,
+    });
+  }
+
+  handleAddRssTab = () => {
+    this.setState({
+      loading: true,
+    }, this.fetchRss);
+  }
+
+  fetchRss = () => {
+    const { fetch } = this.props;
+    const { rssUrl } = this.state;
+    console.log(fetch, rssUrl);
+    fetch.get(`https://cors-anywhere.herokuapp.com/${rssUrl}`)
+      .then(({ data }) => {
+        this.addRssTab({
+          rssUrl,
+          content: data,
+        });
+        this.setState({
+          loading: false,
+          rssUrl: '',
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          loading: false,
+        });
+      });
+  }
+
+  addRssTab = ({ rssUrl, content }) => {
+    const { rssTabs } = this.state;
+
+    this.setState({
+      rssTabs: { ...rssTabs, [rssUrl]: content },
+    });
+  }
+
   render() {
-    const { tabIndex, tabs } = this.state;
+    const {
+      tabs,
+      rssUrl,
+      rssTabs,
+      loading,
+      tabIndex,
+    } = this.state;
 
     return (
       <div className="container">
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon1">RSS</span>
+          </div>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="add rss url"
+            value={rssUrl}
+            onChange={this.handleUrlChange}
+          />
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.handleAddRssTab}
+            disabled={loading}
+          >
+            add
+          </button>
+        </div>
         <Tabs
           selectedIndex={tabIndex}
           onSelect={this.handleTabSelect}
@@ -112,6 +190,17 @@ class App extends React.Component {
             >
               +
             </button>
+            {_.map(_.keys(rssTabs), (tabTitle, index) => (
+              <Tab
+                key={tabTitle}
+                data-test="section-tab"
+                className={cn({
+                  active: index === tabIndex,
+                })}
+              >
+                {tabTitle}
+              </Tab>
+            ))}
           </TabList>
 
           {_.map(tabs, (value, index) => (
@@ -122,7 +211,20 @@ class App extends React.Component {
                   active: index === tabIndex,
                 })}
               >
-                <p className="content content1">{fixtures[value]}</p>
+                <p className="content">{fixtures[value]}</p>
+              </div>
+            </TabPanel>
+          ))}
+
+          {_.map(rssTabs, (value, index) => (
+            <TabPanel key={value}>
+              <div
+                data-test="section-content"
+                className={cn({
+                  active: index === tabIndex,
+                })}
+              >
+                {value}
               </div>
             </TabPanel>
           ))}
