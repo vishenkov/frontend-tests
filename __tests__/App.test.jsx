@@ -5,65 +5,48 @@ import { mount } from 'enzyme';
 import App from '../src/components/App';
 
 const AppPage = wrapper => ({
-  wrapper,
-  tabs() {
-    return wrapper.find('li[data-test="section-tab"]');
-  },
-
-  tabContent() {
-    return wrapper.find('div[data-test="section-content"]');
-  },
-  firstTab() {
-    return this.tabs().at(0);
-  },
-  secondTab() {
-    return this.tabs().at(1);
-  },
-  removeButtons() {
-    return wrapper.find('button[data-test="section-delete-button"]');
-  },
-  addButton() {
-    return wrapper.find('button[data-test="section-tab-add"]').at(0);
-  },
-  reload() {
-    wrapper.unmount();
-    wrapper.mount();
-  },
+  tabs: () => wrapper.find('li[data-test="section-tab"]'),
+  tab: index => wrapper.find('li[data-test="section-tab"]').at(index),
+  tabContent: () => wrapper.find('div[data-test="section-content"]'),
+  removeButtons: () => wrapper.find('button[data-test="section-delete-button"]'),
+  addTabButton: () => wrapper.find('button[data-test="section-tab-add"]').at(0),
 });
 
 
 describe('Matchers suite', () => {
   it('Should switch to second tab', () => {
-    const app = AppPage(mount(<App />));
-    app.secondTab().simulate('click');
+    const page = AppPage(mount(<App />));
+    page.tab(1).simulate('click');
 
-    expect(app.firstTab()).not.toHaveClassName('active');
-    expect(app.secondTab()).toHaveClassName('active');
+    expect(page.tab(0)).not.toHaveClassName('active');
+    expect(page.tab(1)).toHaveClassName('active');
   });
 
 
   it('should remove tab on click', () => {
-    const app = AppPage(mount(<App />));
+    const wrapper = mount(<App />);
+    const page = AppPage(wrapper);
 
-    const tabs = app.tabs();
-    expect(app.wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
-    const removeButton = app.removeButtons().at(0);
+    const tabs = page.tabs();
+    expect(wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
+    const removeButton = page.removeButtons().at(0);
 
     removeButton.simulate('click');
 
-    expect(app.wrapper).toContainMatchingElements(tabs.length - 1, 'li[data-test="section-tab"]');
+    expect(wrapper).toContainMatchingElements(tabs.length - 1, 'li[data-test="section-tab"]');
   });
 
 
   it('should add tab on click', () => {
-    const app = AppPage(mount(<App />));
+    const wrapper = mount(<App />);
+    const page = AppPage(wrapper);
 
-    const tabs = app.tabs();
-    expect(app.wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
+    const tabs = page.tabs();
+    expect(wrapper).toContainMatchingElements(tabs.length, 'li[data-test="section-tab"]');
 
-    app.addButton().simulate('click');
+    page.addTabButton().simulate('click');
 
-    expect(app.wrapper).toContainMatchingElements(tabs.length + 1, 'li[data-test="section-tab"]');
+    expect(wrapper).toContainMatchingElements(tabs.length + 1, 'li[data-test="section-tab"]');
   });
 });
 
@@ -71,12 +54,12 @@ describe('Matchers suite', () => {
 describe('Storage tests', () => {
   it('Should not fail on empty storage state', () => {
     const storage = {
-      get: _.constant(undefined),
+      get: _.noop,
       set: _.noop,
     };
-    const app = AppPage(mount(<App storage={storage} />));
+    const page = AppPage(mount(<App storage={storage} />));
 
-    expect(app.firstTab()).toHaveClassName('active');
+    expect(page.tab(0)).toHaveClassName('active');
   });
 
 
@@ -86,8 +69,8 @@ describe('Storage tests', () => {
       set: _.noop,
     };
 
-    const app = AppPage(mount(<App storage={storage} />));
-    expect(app.secondTab()).toHaveClassName('active');
+    const page = AppPage(mount(<App storage={storage} />));
+    expect(page.tab(1)).toHaveClassName('active');
   });
 
 
@@ -98,9 +81,10 @@ describe('Storage tests', () => {
       set(key, value) { this.state[key] = value; },
     };
 
-    const app = AppPage(mount(<App storage={storage} />));
-    app.secondTab().simulate('click');
-    app.reload();
-    expect(app.secondTab()).toHaveClassName('active');
+    const page = AppPage(mount(<App storage={storage} />));
+    page.tab(1).simulate('click');
+
+    const page2 = AppPage(mount(<App storage={storage} />));
+    expect(page2.tab(1)).toHaveClassName('active');
   });
 });
