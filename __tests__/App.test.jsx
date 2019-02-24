@@ -1,15 +1,20 @@
 import _ from 'lodash';
 import React from 'react';
 import { mount } from 'enzyme';
+import delay from 'delay';
+import nock from 'nock';
 
 import App from '../src/components/App';
 
 const AppPage = wrapper => ({
+  wrapper,
   tabs: () => wrapper.find('li[data-test="section-tab"]'),
   tab: index => wrapper.find('li[data-test="section-tab"]').at(index),
-  tabContent: () => wrapper.find('div[data-test="section-content"]'),
+  activeTabContent: () => wrapper.find('div[data-test="section-content"]'),
   removeButtons: () => wrapper.find('button[data-test="section-delete-button"]'),
   addTabButton: () => wrapper.find('button[data-test="section-tab-add"]').at(0),
+  addRssTabButton: () => wrapper.find('button[data-test="rss-add-button"]').at(0),
+  rssInput: () => wrapper.find('input[data-test="rss-input"]').at(0),
 });
 
 
@@ -86,5 +91,29 @@ describe('Storage tests', () => {
 
     const page2 = AppPage(mount(<App storage={storage} />));
     expect(page2.tab(1)).toHaveClassName('active');
+  });
+});
+
+describe('RSS tab tests', () => {
+  it('Should open new rss tab with response', async () => {
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com';
+    const testUrl = '/some-url';
+    const content = 'some response';
+
+    nock(proxyUrl)
+      .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
+      .get(testUrl)
+      .reply(200, content);
+
+    const wrapper = mount(<App />);
+    const page = AppPage(wrapper);
+    page.rssInput().simulate('change', { target: { value: testUrl } });
+    page.addRssTabButton().simulate('click');
+
+    await delay(100);
+    wrapper.update();
+
+    expect(page.tab(page.tabs().length - 1)).toHaveClassName('active');
+    expect(page.activeTabContent()).toHaveText(content);
   });
 });

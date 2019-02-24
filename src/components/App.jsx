@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -36,9 +37,7 @@ class App extends React.Component {
       get: _.noop,
       set: _.noop,
     },
-    fetch: {
-      get: _.noop,
-    },
+    fetch: axios,
   };
 
   constructor(props) {
@@ -93,34 +92,37 @@ class App extends React.Component {
     }, this.fetchRss);
   }
 
-  fetchRss = () => {
+  fetchRss = async () => {
     const { fetch } = this.props;
     const { rssUrl } = this.state;
-    console.log(fetch, rssUrl);
-    fetch.get(`https://cors-anywhere.herokuapp.com/${rssUrl}`)
-      .then(({ data }) => {
-        this.addRssTab({
-          rssUrl,
-          content: data,
-        });
-        this.setState({
-          loading: false,
-          rssUrl: '',
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setState({
-          loading: false,
-        });
+    const url = _.startsWith(rssUrl, '/')
+      ? rssUrl
+      : `/${rssUrl}`;
+
+    try {
+      const { data } = await fetch.get(`https://cors-anywhere.herokuapp.com${url}`);
+
+      this.addRssTab({
+        rssUrl,
+        content: data,
       });
+    } catch (error) {
+      console.error(error);
+
+      this.setState({
+        loading: false,
+      });
+    }
   }
 
   addRssTab = ({ rssUrl, content }) => {
-    const { rssTabs } = this.state;
+    const { rssTabs, tabs } = this.state;
 
     this.setState({
       rssTabs: { ...rssTabs, [rssUrl]: content },
+      tabIndex: [...tabs, ..._.keys(rssTabs)].length,
+      loading: false,
+      rssUrl: '',
     });
   }
 
@@ -137,18 +139,20 @@ class App extends React.Component {
       <div className="container">
         <div className="input-group mb-3">
           <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon1">RSS</span>
+            <span className="input-group-text">RSS</span>
           </div>
           <input
             type="text"
+            value={rssUrl}
             className="form-control"
             placeholder="add rss url"
-            value={rssUrl}
+            data-test="rss-input"
             onChange={this.handleUrlChange}
           />
           <button
             type="button"
             className="btn btn-primary"
+            data-test="rss-add-button"
             onClick={this.handleAddRssTab}
             disabled={loading}
           >
@@ -195,10 +199,10 @@ class App extends React.Component {
                 key={tabTitle}
                 data-test="section-tab"
                 className={cn({
-                  active: index === tabIndex,
+                  active: (tabs.length) + index === tabIndex,
                 })}
               >
-                {tabTitle}
+                {_.truncate(tabTitle, 15)}
               </Tab>
             ))}
           </TabList>
@@ -221,7 +225,7 @@ class App extends React.Component {
               <div
                 data-test="section-content"
                 className={cn({
-                  active: index === tabIndex,
+                  active: (tabs.length) + index === tabIndex,
                 })}
               >
                 {value}
